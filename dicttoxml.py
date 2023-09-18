@@ -46,9 +46,9 @@ def set_debug(debug=False, filename='dicttoxml.log'):
         import datetime
         print('Debug mode is on. Events are logged at: %s' % (filename))
         logging.basicConfig(filename=filename, level=logging.INFO)
-        LOG.info('\nLogging session starts: %s' % (
-            str(datetime.datetime.today()))
-        )
+        # LOG.info('\nLogging session starts: %s' % (
+        #     str(datetime.datetime.today()))
+        # )
     else:
         logging.basicConfig(level=logging.WARNING)
 
@@ -58,7 +58,7 @@ def unicode_me(val):
     Python 3 doesn't have a `unicode()` function, so `unicode()` is an alias
     for `str()`, but `str()` doesn't take a second argument, hence this kludge.
     """
-    LOG.info('Inside unicode_me(). val = "%s"' % (val, ))
+    # LOG.info('Inside unicode_me(). val = "%s"' % (val, ))
     try:
         return unicode(val, 'utf-8')
     except:
@@ -69,13 +69,13 @@ ids = [] # initialize list of unique ids
 
 def make_id(element, start=100000, end=999999):
     """Returns a random integer"""
-    LOG.info('Inside make_id(). element = "%s", start="%s", end="%s"' % (element, start, end))
+    # LOG.info('Inside make_id(). element = "%s", start="%s", end="%s"' % (element, start, end))
     return '%s_%s' % (element, randint(start, end))
 
 
 def get_unique_id(element):
     """Returns a unique id for a given element"""
-    LOG.info('Inside get_unique_id(). element = "%s"' % (element, ))
+    # LOG.info('Inside get_unique_id(). element = "%s"' % (element, ))
     this_id = make_id(element)
     dup = True
     while dup:
@@ -89,46 +89,46 @@ def get_unique_id(element):
 
 def get_xml_type(val):
     """Returns the data type for the xml type attribute"""
-    LOG.info('Inside get_xml_type(). val = "%s", type(val) = "%s"' % (val, type(val).__name__))
+    # LOG.info('Inside get_xml_type(). val = "%s", type(val) = "%s"' % (val, type(val).__name__))
 
     if type(val).__name__ == 'NoneType':
-        LOG.info("type(val).__name__ == 'NoneType', returning 'null'")
+        # LOG.info("type(val).__name__ == 'NoneType', returning 'null'")
         return 'null'
 
     elif type(val).__name__ == 'bool':
-        LOG.info("type(val).__name__ == 'bool', returning 'bool'")
+        # LOG.info("type(val).__name__ == 'bool', returning 'bool'")
         return 'bool'
 
     elif type(val).__name__ in ('str', 'unicode'):
-        LOG.info("type(val).__name__ in ('str', unicode'), returning 'str'")
+        # LOG.info("type(val).__name__ in ('str', unicode'), returning 'str'")
         return 'str'
 
     elif type(val).__name__ in ('int', 'long'):
-        LOG.info("type(val).__name__ in ('int', long'), returning 'int'")
+        # LOG.info("type(val).__name__ in ('int', long'), returning 'int'")
         return 'int'
 
     elif type(val).__name__ == 'float':
-        LOG.info("type(val).__name__ == 'float', returning 'float'")
+        # LOG.info("type(val).__name__ == 'float', returning 'float'")
         return 'float'
 
     elif isinstance(val, numbers.Number):
-        LOG.info("isinstance(val, numbers.Number), returning 'number'")
+        # LOG.info("isinstance(val, numbers.Number), returning 'number'")
         return 'number'
 
     elif isinstance(val, dict):
-        LOG.info("isinstance(val, dict), returning 'dict'")
+        # LOG.info("isinstance(val, dict), returning 'dict'")
         return 'dict'
 
     elif isinstance(val, iterable):
-        LOG.info("isinstance(val, iterable), returning 'list'")
+        # LOG.info("isinstance(val, iterable), returning 'list'")
         return 'list'
 
-    LOG.info("type not found, returning '%s'" % (type(val).__name__))
+    # LOG.info("type not found, returning '%s'" % (type(val).__name__))
     return type(val).__name__
 
 
 def escape_xml(s):
-    LOG.info('Inside escape_xml(). s = "%s" and type(s) = "%s"' % (s, type(s)))
+    # LOG.info('Inside escape_xml(). s = "%s" and type(s) = "%s"' % (s, type(s)))
     if type(s) in (str, unicode):
         s = unicode_me(s) # avoid UnicodeDecodeError
         s = s.replace('&', '&amp;')
@@ -141,14 +141,14 @@ def escape_xml(s):
 
 def make_attrstring(attr):
     """Returns an attribute string in the form key="val" """
-    LOG.info('Inside make_attstring(). attr = "%s"' % (attr, ))
+    # LOG.info('Inside make_attstring(). attr = "%s"' % (attr, ))
     attrstring = ' '.join(['%s="%s"' % (k, v) for k, v in attr.items()])
     return '%s%s' % (' ' if attrstring != '' else '', attrstring)
 
 
 def key_is_valid_xml(key):
     """Checks that a key is a valid XML name"""
-    LOG.info('Inside key_is_valid_xml(). Testing "%s"' % (unicode_me(key)))
+    # LOG.info('Inside key_is_valid_xml(). Testing "%s"' % (unicode_me(key)))
     test_xml = '<?xml version="1.0" encoding="UTF-8" ?><%s>foo</%s>' % (key, key)
     try:
         parseString(test_xml)
@@ -159,9 +159,9 @@ def key_is_valid_xml(key):
 
 def make_valid_xml_name(key, attr):
     """Tests an XML name and fixes it if invalid"""
-    LOG.info('Inside make_valid_xml_name(). Testing key "%s" with attr "%s"' % (
-        unicode_me(key), unicode_me(attr))
-    )
+    # LOG.info('Inside make_valid_xml_name(). Testing key "%s" with attr "%s"' % (
+    #     unicode_me(key), unicode_me(attr))
+    # )
     key = escape_xml(key)
     attr = escape_xml(attr)
 
@@ -191,20 +191,20 @@ def make_valid_xml_name(key, attr):
 
 def wrap_cdata(val):
     """Wraps a string into CDATA sections"""
-    LOG.info('Inside wrap_cdata(). val = "%s"' % (val, ))
+    # LOG.info('Inside wrap_cdata(). val = "%s"' % (val, ))
     val = unicode_me(val).replace(']]>', ']]]]><![CDATA[>')
     return '<![CDATA[' + val + ']]>'
 
 
 def default_item_func(parent):
-    LOG.info('Inside default_item_func(). parent = "%s"' % (parent, ))
+    # LOG.info('Inside default_item_func(). parent = "%s"' % (parent, ))
     return 'item'
 
 
 def convert(obj, ids, attr_type, item_func, cdata, parent='root'):
     """Routes the elements of an object to the right function to convert them
     based on their data type"""
-    LOG.info('Inside convert(). obj type is: "%s", obj="%s"' % (type(obj).__name__, unicode_me(obj)))
+    # LOG.info('Inside convert(). obj type is: "%s", obj="%s"' % (type(obj).__name__, unicode_me(obj)))
 
     item_name = item_func(parent)
 
@@ -231,18 +231,18 @@ def convert(obj, ids, attr_type, item_func, cdata, parent='root'):
 
 def convert_dict(obj, ids, parent, attr_type, item_func, cdata):
     """Converts a dict into an XML string."""
-    LOG.info('Inside convert_dict(): obj type is: "%s", obj="%s"' % (
-        type(obj).__name__, unicode_me(obj))
-    )
+    # LOG.info('Inside convert_dict(): obj type is: "%s", obj="%s"' % (
+    #     type(obj).__name__, unicode_me(obj))
+    # )
     output = []
     addline = output.append
 
     item_name = item_func(parent)
 
     for key, val in obj.items():
-        LOG.info('Looping inside convert_dict(): key="%s", val="%s", type(val)="%s"' % (
-            unicode_me(key), unicode_me(val), type(val).__name__)
-        )
+        # LOG.info('Looping inside convert_dict(): key="%s", val="%s", type(val)="%s"' % (
+        #     unicode_me(key), unicode_me(val), type(val).__name__)
+        # )
 
         attr = {} if not ids else {'id': '%s' % (get_unique_id(parent)) }
 
@@ -294,7 +294,7 @@ def convert_dict(obj, ids, parent, attr_type, item_func, cdata):
 
 def convert_list(items, ids, parent, attr_type, item_func, cdata):
     """Converts a list into an XML string."""
-    LOG.info('Inside convert_list()')
+    # LOG.info('Inside convert_list()')
     output = []
     addline = output.append
 
@@ -304,9 +304,9 @@ def convert_list(items, ids, parent, attr_type, item_func, cdata):
         this_id = get_unique_id(parent)
 
     for i, item in enumerate(items):
-        LOG.info('Looping inside convert_list(): item="%s", item_name="%s", type="%s"' % (
-            unicode_me(item), item_name, type(item).__name__)
-        )
+        # LOG.info('Looping inside convert_list(): item="%s", item_name="%s", type="%s"' % (
+        #     unicode_me(item), item_name, type(item).__name__)
+        # )
         attr = {} if not ids else { 'id': '%s_%s' % (this_id, i+1) }
         if isinstance(item, numbers.Number) or type(item) in (str, unicode):
             addline(convert_kv(item_name, item, attr_type, cdata, attr))
@@ -361,9 +361,9 @@ def convert_list(items, ids, parent, attr_type, item_func, cdata):
 
 def convert_kv(key, val, attr_type, cdata=False, attr=None):
     """Converts a number or string into an XML element"""
-    LOG.info('Inside convert_kv(): key="%s", val="%s", type(val) is: "%s"' % (
-        unicode_me(key), unicode_me(val), type(val).__name__)
-    )
+    # LOG.info('Inside convert_kv(): key="%s", val="%s", type(val) is: "%s"' % (
+    #     unicode_me(key), unicode_me(val), type(val).__name__)
+    # )
 
     if attr is None:
         attr = {}
@@ -382,12 +382,12 @@ def convert_kv(key, val, attr_type, cdata=False, attr=None):
 
 def convert_bool(key, val, attr_type, cdata=False, attr=None):
     """Converts a boolean into an XML element"""
-    LOG.info('Inside convert_bool(): key="%s", val="%s", type(val) is: "%s"' % (
-        unicode_me(key),
-        unicode_me(val),
-        type(val).__name__
-        )
-    )
+    # LOG.info('Inside convert_bool(): key="%s", val="%s", type(val) is: "%s"' % (
+    #     unicode_me(key),
+    #     unicode_me(val),
+    #     type(val).__name__
+    #     )
+    # )
 
     if attr is None:
         attr = {}
@@ -402,13 +402,13 @@ def convert_bool(key, val, attr_type, cdata=False, attr=None):
 
 def convert_none(key, val, attr_type, cdata=False, attr=None):
     """Converts a null value into an XML element"""
-    LOG.info('Inside convert_none(): key="%s". val="%s", attr_type="%s", attr=%s' % (
-        unicode_me(key),
-        unicode_me(val),
-        unicode_me(attr_type),
-        str(attr),
-        )
-    )
+    # LOG.info('Inside convert_none(): key="%s". val="%s", attr_type="%s", attr=%s' % (
+    #     unicode_me(key),
+    #     unicode_me(val),
+    #     unicode_me(attr_type),
+    #     str(attr),
+    #     )
+    # )
 
     if attr is None:
         attr = {}
@@ -450,7 +450,7 @@ def dicttoxml(
     - cdata specifies whether string values should be wrapped in CDATA sections.
       Default is False
     """
-    LOG.info('Inside dicttoxml(): type(obj) is: "%s", obj="%s"' % (type(obj).__name__, unicode_me(obj)))
+    # LOG.info('Inside dicttoxml(): type(obj) is: "%s", obj="%s"' % (type(obj).__name__, unicode_me(obj)))
     output = []
     addline = output.append
     if root == True:
